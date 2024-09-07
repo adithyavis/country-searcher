@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { CountrySearcher } from "src/components/CountrySearcher";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <SafeAreaView style={styles.container}>
+      <CountrySearcher />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
