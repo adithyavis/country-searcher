@@ -2,6 +2,8 @@
 
 Country Searcher is a React Native application that allows users to search for and view details about different countries.
 
+![image](./country-searcher.gif)
+
 ## Features
 
 - Search for countries by name
