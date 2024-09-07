@@ -6,7 +6,7 @@ const fetcher: Fetcher<Country[], string> = (url) =>
 
 const useCountries = () => {
   return useSWR(
-    "https://restcountries.com/v3.1/independent?status=true&fields=name,capital,currency,languages,continents,population,timezones,flags",
+    "https://restcountries.com/v3.1/independent?status=true&fields=name,capital,currencies,languages,continents,population,timezones,flags",
     fetcher,
   );
 };

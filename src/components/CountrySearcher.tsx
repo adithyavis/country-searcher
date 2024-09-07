@@ -11,12 +11,16 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import Country from "src/types/country";
+import CountryDetailBottomSheet from "src/components/CountryDetailBottomSheet";
 import useCountries from "src/hooks/useCountries";
 import useFilterCountries from "src/hooks/useFilterCountries";
 import CountryCard from "src/components/CountryCard";
 
 export const CountrySearcher = React.memo(() => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const resetSelectedCountry = () => setSelectedCountry(null);
+
   const { data: countries, isLoading, error } = useCountries();
 
   const data: FlatListProps<Country>["data"] = useFilterCountries(
@@ -26,7 +30,9 @@ export const CountrySearcher = React.memo(() => {
 
   const renderItem: FlatListProps<Country>["renderItem"] = useCallback(
     ({ item }) => {
-      return <CountryCard item={item} />;
+      return (
+        <CountryCard item={item} onPressSeeMoreButton={setSelectedCountry} />
+      );
     },
     [],
   );
@@ -72,6 +78,10 @@ export const CountrySearcher = React.memo(() => {
 
   return (
     <View style={styles.container}>
+      <CountryDetailBottomSheet
+        selectedCountry={selectedCountry}
+        onClose={resetSelectedCountry}
+      />
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -89,7 +99,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    width: "100%",
+    minWidth: "100%",
   },
   listContentContainer: {
     paddingVertical: 10,

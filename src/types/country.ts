@@ -3,7 +3,7 @@ type Country = {
     common: string;
   };
   capital: string[];
-  currency: {
+  currencies: {
     [key: string]: {
       name: string;
       symbol: string;
