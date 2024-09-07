@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   searchBarResetButton: {
     position: "absolute",
-    right: 16,
+    right: 28,
     zIndex: 1,
   },
 });
