@@ -33,7 +33,14 @@ const SearchBar = React.memo(
 SearchBar.displayName = "SearchBar";
 
 const styles = StyleSheet.create({
-  searchBarContainer: { justifyContent: "center" },
+  searchBarContainer: {
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    backgroundColor: "#fff",
+  },
   searchBar: {
     height: 40,
     backgroundColor: "#f0f0f0",

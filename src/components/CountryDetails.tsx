@@ -7,17 +7,14 @@ type CountryDetailsProps = {
   country: Country;
 };
 const CountryDetails = React.memo(({ country }: CountryDetailsProps) => {
-  const countryName = useMemo(() => country?.name.common ?? "", [country]);
-  const listOfCapitals = useMemo(
-    () => country?.capital.join(", ") ?? "",
-    [country],
-  );
+  const countryName = useMemo(() => country?.name.common, [country]);
+  const listOfCapitals = useMemo(() => country?.capital.join(", "), [country]);
   const listOfTimezones = useMemo(
-    () => country?.timezones.join(", ") ?? "",
+    () => country?.timezones.join(", "),
     [country],
   );
   const listOfContinents = useMemo(
-    () => country?.continents.join(", ") ?? "",
+    () => country?.continents.join(", "),
     [country],
   );
   const currencies = useMemo(
@@ -33,7 +30,7 @@ const CountryDetails = React.memo(({ country }: CountryDetailsProps) => {
     () => (country ? Object.values(country.languages).join(", ") : ""),
     [country],
   );
-  const population = useMemo(() => `${country?.population}` ?? "", [country]);
+  const population = useMemo(() => `${country?.population}`, [country]);
 
   return (
     <>

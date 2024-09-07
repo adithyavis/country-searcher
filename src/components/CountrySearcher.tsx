@@ -8,6 +8,14 @@ import useFilterCountries from "src/hooks/useFilterCountries";
 import CountryCard from "src/components/CountryCard";
 import SearchBar from "src/components/SearchBar";
 
+type FlatListCountryItem = { type: "country"; country: Country };
+type FlatListItem =
+  | {
+      type: "title";
+    }
+  | { type: "searchBarContainer" }
+  | FlatListCountryItem;
+
 export const CountrySearcher = React.memo(() => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
@@ -15,37 +23,54 @@ export const CountrySearcher = React.memo(() => {
 
   const { data: countries, isLoading, error } = useCountries();
 
-  const data: FlatListProps<Country>["data"] = useFilterCountries(
-    countries,
-    searchQuery,
-  );
+  const filtedCountries = useFilterCountries(countries, searchQuery);
 
-  const renderItem: FlatListProps<Country>["renderItem"] = useCallback(
+  const data: FlatListProps<FlatListItem>["data"] = useMemo(() => {
+    return [
+      {
+        type: "title",
+      },
+      { type: "searchBarContainer" },
+      ...filtedCountries.map<FlatListCountryItem>((country) => ({
+        type: "country",
+        country,
+      })),
+    ];
+  }, [filtedCountries]);
+
+  const renderItem: FlatListProps<FlatListItem>["renderItem"] = useCallback(
     ({ item }) => {
-      return (
-        <CountryCard item={item} onPressSeeMoreButton={setSelectedCountry} />
-      );
-    },
-    [],
-  );
-
-  const keyExtractor: FlatListProps<Country>["keyExtractor"] = useCallback(
-    (item) => item.name.common,
-    [],
-  );
-
-  const listHeaderComponent: FlatListProps<Country>["ListHeaderComponent"] =
-    useMemo(() => {
-      return (
-        <View>
-          <Text style={styles.title}>Country Searcher</Text>
+      if (item.type === "title") {
+        return <Text style={styles.title}>Country Searcher</Text>;
+      }
+      if (item.type === "searchBarContainer") {
+        return (
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-        </View>
+        );
+      }
+      return (
+        <CountryCard
+          item={item.country}
+          onPressSeeMoreButton={setSelectedCountry}
+        />
       );
-    }, [searchQuery]);
+    },
+    [searchQuery],
+  );
+
+  const keyExtractor: FlatListProps<FlatListItem>["keyExtractor"] = useCallback(
+    (item) => {
+      if (item.type === "title" || item.type === "searchBarContainer") {
+        return item.type;
+      }
+
+      return item.country.name.common;
+    },
+    [],
+  );
 
   if (error) {
     return <Text>Error loading countries</Text>;
@@ -65,9 +90,8 @@ export const CountrySearcher = React.memo(() => {
         data={data}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        stickyHeaderIndices={[1]}
         contentContainerStyle={styles.listContentContainer}
-        ListHeaderComponent={listHeaderComponent}
-        ListHeaderComponentStyle={styles.listHeaderComponentStyle}
       />
     </View>
   );
@@ -83,17 +107,12 @@ const styles = StyleSheet.create({
   listContentContainer: {
     paddingVertical: 10,
   },
-  listHeaderComponentStyle: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 16,
     textAlign: "center",
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
 });
