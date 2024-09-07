@@ -6,10 +6,12 @@ import {
   FlatList,
   TextInput,
   FlatListProps,
+  TouchableOpacity,
 } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-import Country from "../types/country";
-import useCountries from "../hooks/useCountries";
+import Country from "src/types/country";
+import useCountries from "src/hooks/useCountries";
 import useFilterCountries from "src/hooks/useFilterCountries";
 import CountryCard from "src/components/CountryCard";
 
@@ -35,20 +37,30 @@ export const CountrySearcher = React.memo(() => {
   );
 
   const listHeaderComponent: FlatListProps<Country>["ListHeaderComponent"] =
-    useMemo(
-      () => (
+    useMemo(() => {
+      const resetSearchQuery = () => setSearchQuery("");
+      return (
         <View>
           <Text style={styles.title}>Country Searcher</Text>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search Countries"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+          <View style={styles.searchBarContainer}>
+            {searchQuery.length !== 0 && (
+              <TouchableOpacity
+                onPress={resetSearchQuery}
+                style={styles.searchBarResetButton}
+              >
+                <MaterialCommunityIcons name="close" size={20} color="gray" />
+              </TouchableOpacity>
+            )}
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search Countries"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
         </View>
-      ),
-      [searchQuery],
-    );
+      );
+    }, [searchQuery]);
 
   if (error) {
     return <Text>Error loading countries</Text>;
@@ -95,6 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: "center",
   },
+  searchBarContainer: { justifyContent: "center" },
   searchBar: {
     height: 40,
     backgroundColor: "#f0f0f0",
@@ -102,5 +115,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 16,
     color: "#333",
+  },
+  searchBarResetButton: {
+    position: "absolute",
+    right: 16,
+    zIndex: 1,
   },
 });
