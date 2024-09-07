@@ -1,20 +1,12 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  FlatListProps,
-  TouchableOpacity,
-} from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { View, Text, StyleSheet, FlatListProps, FlatList } from "react-native";
 
 import Country from "src/types/country";
 import CountryDetailBottomSheet from "src/components/CountryDetailBottomSheet";
 import useCountries from "src/hooks/useCountries";
 import useFilterCountries from "src/hooks/useFilterCountries";
 import CountryCard from "src/components/CountryCard";
+import SearchBar from "src/components/SearchBar";
 
 export const CountrySearcher = React.memo(() => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,26 +36,13 @@ export const CountrySearcher = React.memo(() => {
 
   const listHeaderComponent: FlatListProps<Country>["ListHeaderComponent"] =
     useMemo(() => {
-      const resetSearchQuery = () => setSearchQuery("");
       return (
         <View>
           <Text style={styles.title}>Country Searcher</Text>
-          <View style={styles.searchBarContainer}>
-            {searchQuery.length !== 0 && (
-              <TouchableOpacity
-                onPress={resetSearchQuery}
-                style={styles.searchBarResetButton}
-              >
-                <MaterialCommunityIcons name="close" size={20} color="gray" />
-              </TouchableOpacity>
-            )}
-            <TextInput
-              style={styles.searchBar}
-              placeholder="Search Countries"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-          </View>
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         </View>
       );
     }, [searchQuery]);
@@ -116,19 +95,5 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 16,
     textAlign: "center",
-  },
-  searchBarContainer: { justifyContent: "center" },
-  searchBar: {
-    height: 40,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: "#333",
-  },
-  searchBarResetButton: {
-    position: "absolute",
-    right: 16,
-    zIndex: 1,
   },
 });
